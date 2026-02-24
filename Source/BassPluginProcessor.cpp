@@ -113,6 +113,8 @@ void AphexBassAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlo
 
     phaseMain = phaseSub = phaseFm = lfoPhase = 0.0f;
     currentFrequency = targetFrequency = 55.0f;
+    bassBloomStateL = 0.0f;
+    bassBloomStateR = 0.0f;
     heldNotes.clear();
 }
 
@@ -282,10 +284,12 @@ void AphexBassAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juc
         const float pulse = phaseNorm < pulseWidth ? 1.0f : -1.0f;
         const float mainOsc = juce::jmap(oscMix, saw, pulse);
 
-        const float subOsc = std::sin(phaseSub);
+        const float subPure = std::sin(phaseSub);
+        const float subSaturated = softClip(subPure * (1.7f + subMix * 0.9f));
+        const float subOsc = juce::jmap(0.34f + subMix * 0.5f, subPure, subSaturated);
         const float noiseSig = random.nextFloat() * 2.0f - 1.0f;
 
-        float voice = (mainOsc * (1.0f - subMix)) + (subOsc * subMix);
+        float voice = (mainOsc * (1.0f - subMix * 0.9f)) + (subOsc * (subMix * 1.08f));
         voice += noiseSig * noise;
 
         voice = waveFold(voice, fold);
@@ -306,8 +310,18 @@ void AphexBassAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juc
 
         const float velocityGain = (0.25f + 0.75f * lastVelocity) * (1.0f + 0.22f * accentBoost);
         const float monoSignal = voice * ampValue * velocityGain;
-        const float left = filterL.processSample(0, monoSignal);
-        const float right = filterR.processSample(0, monoSignal);
+        float left = filterL.processSample(0, monoSignal);
+        float right = filterR.processSample(0, monoSignal);
+
+        // Add controlled post-filter low-end bloom for a fatter body.
+        const float bloomCoeff = 0.030f;
+        bassBloomStateL += bloomCoeff * (left - bassBloomStateL);
+        bassBloomStateR += bloomCoeff * (right - bassBloomStateR);
+        const float bloomAmount = (0.14f + 0.34f * subMix) * (1.0f + 0.24f * drive);
+        left += softClip(bassBloomStateL * 2.4f) * bloomAmount;
+        right += softClip(bassBloomStateR * 2.4f) * bloomAmount;
+        left = softClip(left * 0.9f);
+        right = softClip(right * 0.9f);
 
         if (numChannels > 0)
             buffer.setSample(0, sample, left * outputGain);

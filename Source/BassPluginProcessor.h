@@ -69,6 +69,8 @@ private:
     float currentFrequency = 55.0f;
     float targetFrequency = 55.0f;
     float lastVelocity = 1.0f;
+    float bassBloomStateL = 0.0f;
+    float bassBloomStateR = 0.0f;
 
     std::vector<int> heldNotes;
 
