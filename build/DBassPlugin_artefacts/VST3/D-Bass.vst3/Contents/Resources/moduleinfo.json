@@ -1,0 +1,48 @@
+{
+  "Name": "D-Bass",
+  "Version": "0.1.0",
+  "Factory Info": {
+    "Vendor": "Codex",
+    "URL": "",
+    "E-Mail": "",
+    "Flags": {
+      "Unicode": true,
+      "Classes Discardable": false,
+      "Component Non Discardable": false,
+    },
+  },
+  "Classes": [
+    {
+      "CID": "ABCDEF019182FAEB4364783144627331",
+      "Category": "Audio Module Class",
+      "Name": "D-Bass",
+      "Vendor": "Codex",
+      "Version": "0.1.0",
+      "SDKVersion": "VST 3.8.0",
+      "Sub Categories": [
+        "Instrument",
+        "Synth",
+      ],
+      "Class Flags": 2,
+      "Cardinality": 2147483647,
+      "Snapshots": [
+      ],
+    },
+    {
+      "CID": "ABCDEF011234ABCD4364783144627331",
+      "Category": "Component Controller Class",
+      "Name": "D-Bass",
+      "Vendor": "Codex",
+      "Version": "0.1.0",
+      "SDKVersion": "VST 3.8.0",
+      "Sub Categories": [
+        "Instrument",
+        "Synth",
+      ],
+      "Class Flags": 2,
+      "Cardinality": 2147483647,
+      "Snapshots": [
+      ],
+    },
+  ],
+}
