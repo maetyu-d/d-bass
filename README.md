@@ -1,6 +1,6 @@
 # D-Bass
 
-JUCE synth-bass plugin with mono legato phrasing, velocity accent behavior, FM timbre shaping, wavefold/drive distortion, and animated filtering.
+Acid-style synth-bass plugin with mono legato phrasing, velocity accent behavior, FM timbre shaping, wavefold/drive distortion, and animated filtering. Created with JUCE.
 
 ## Source
 
